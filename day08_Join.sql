@@ -61,10 +61,11 @@ use sys;
   siparis_tarihleri listeleyen bir sorgu yaziniz.
 ------------------------------------------------------------------------------*/
 
-select sir.sirket_isim, sip.siparis_id,sip.siparis_tarihi,sip.sirket_id
+select sir.sirket_isim, sip.siparis_id, sip.siparis_tarihi,sip.sirket_id 
 from sirketler sir
 inner join siparisler sip
-on sir.sirket_id=sip.sirket_id;
+on sir.sirket_id= sip.sirket_id;
+
 -- INNER JOIN ile sadece iki tablodaki ortak olan satirlar secilir.
     -- Diger bir ifadeyle iki tablodaki ortak olan sirket_id degerleri icin 
     -- ilgili sutunlar listenir.
@@ -90,16 +91,11 @@ on sir.sirket_id=sip.sirket_id;
   ORNEK2: sirketler tablosundaki tum sirketleri ve bu sirketlere ait olan 
   siparis_id ve siparis_tarihleri listeleyen bir sorgu yaziniz.
 ------------------------------------------------------------------------------*/   
-select sir.sirket_isim, sip.siparis_id, sip.siparis_tarihi, sir.sirket_id
+select sirket_isim, siparis_id, siparis_tarihi, sir.sirket_id 
 from sirketler sir
- left join siparisler sip
+left join siparisler sip
 on sir.sirket_id=sip.sirket_id;
 
-
-select sir.sirket_isim, sip.siparis_id, sip.siparis_tarihi, sir.sirket_id
-from siparisler sip
-right join sirketler sir
-on sir.sirket_id=sip.sirket_id;
 
 -- Left Join'de ilk tablodaki (fromdan sonra gelen)tum satirlar gosterilir.
     -- Ilk tablodaki satirlara 2.tablodan kosula uyan ortak satirlar 
@@ -123,9 +119,10 @@ on sir.sirket_id=sip.sirket_id;
   ORNEK3: siparisler tablosundaki tum siparis_id ve siparis_tarihleri ile 
   bunlara karşılık gelen sirket_isimlerini listeleyen bir sorgu yaziniz.
 ------------------------------------------------------------------------------*/   
-select sir.sirket_isim, sip.siparis_id,sip.siparis_tarihi
-from sirketler as sir right join siparisler as sip
-on sir.sirket_id=sip.sirket_id;
+use sys;
+select sip.siparis_id,sip.siparis_tarihi,sir.sirket_isim from siparisler sip
+right join sirketler sir
+on  sip.sirket_id=sir.sirket_id;
 
 -- Right Join'de 2. tablodaki tum satirlar gosterilir.
     -- 2 tablodaki satirlara 1.tablodan kosula uyan ortak satirlar gosterilir
@@ -154,15 +151,16 @@ on sir.sirket_id=sip.sirket_id;
   ORNEK4: sirketler ve siparisler adındaki tablolarda yer alan sirket_isim, 
   siparis_id ve siparis_tarihleri listeleyen bir sorgu yaziniz.
 ------------------------------------------------------------------------------*/ 
-select sir.sirket_isim, sip.siparis_id,sip.siparis_tarihi, sir.sirket_id
-from sirketler sir
+
+select sir.sirket_isim, sip.siparis_id, sip.siparis_tarihi, sip.sirket_id from sirketler sir
 left join siparisler sip
-on sir.sirket_id=sip.sirket_id
+on sip.sirket_id=sir.sirket_id
 union
-select sir.sirket_isim, sip.siparis_id,sip.siparis_tarihi,sip.sirket_id
-from sirketler sir
+select sir.sirket_isim, sip.siparis_id, sip.siparis_tarihi, sip.sirket_id from sirketler sir
 right join siparisler sip
-on sir.sirket_id=sip.sirket_id;
+on sip.sirket_id=sir.sirket_id;
+
+
 -- **********************************************
 
 	CREATE TABLE bolumler (
@@ -209,12 +207,11 @@ on sir.sirket_id=sip.sirket_id;
   ORNEK1: SATIS ve MUHASEBE bolumlerinde calisan personelin isimlerini ve 
   bolumlerini, once bolum sonra isim sıralı olarak listeleyiniz
 ------------------------------------------------------------------------------*/ 
-select p.personel_isim, b.bolum_isim
-from bolumler b
-join personel p
-on p.bolum_id=b.bolum_id
-where bolum_isim in('satis','muhasebe')
-order by b.bolum_isim,p.personel_isim;
+select bol.bolum_isim, per.personel_isim from bolumler bol
+join personel per
+on bol.bolum_id=per.bolum_id
+where bolum_isim in ('satis','muhasebe')
+order by bolum_isim,personel_isim;
 
 -- bağlama işi join lerde on keyword ü ile yapilir
 
@@ -224,21 +221,24 @@ order by b.bolum_isim,p.personel_isim;
   bolumlerini  isim sıralı olarak listeleyiniz. 
   NOT: calisani olmasa bile bolum ismi gosterilmelidir.
 ------------------------------------------------------------------------------*/  
-select b.bolum_isim, p.personel_isim
-from bolumler b  left join personel p
-on p.bolum_id=b.bolum_id
-where b.bolum_id in(30,40,50)
-order by b.bolum_isim;
+select per.personel_isim, bol.bolum_isim from personel as per
+right join bolumler as bol
+on per.bolum_id=bol.bolum_id
+where bolum_isim in('Satis','Isletme','Depo')
+order by bolum_isim;
 
 /* -----------------------------------------------------------------------------
-  ORNEK3: Tüm bolumlerde calisan personelin isimlerini, bolum isimlerini ve 
-  maaslarini bolum ters ve maas sirali listeleyiniz. 
+  ORNEK3: Tüm bolumlerde calisan personelin isimlerini, bolum isimlerini  bolum ters ve maas sirali listeleyiniz. 
   NOT: calisani olmasa bile bolum ismi gosterilmelidir.
 ------------------------------------------------------------------------------*/  
-select b.bolum_isim, p.personel_isim, p.maas
-from bolumler b left join personel p
-on p.bolum_id=b.bolum_id
-ORDER BY b.bolum_isim desc,p.maas ;
+
+select per.personel_isim, bol.bolum_isim,per.maas from personel as per
+left join bolumler as bol
+on per.bolum_id=bol.bolum_id
+order by bolum_isim desc, maas ;
+
+
+
 
 
 
@@ -247,12 +247,13 @@ ORDER BY b.bolum_isim desc,p.maas ;
   buyuk olanlarinin isim,bolum ve maas bilgilerini bolume ve isme gore
   siralayarak listeleyiniz.
 ------------------------------------------------------------------------------*/   
+	
+    select personel_isim, bolum_isim, maas from personel p
+    left join bolumler b
+    on p.bolum_id=b.bolum_id
+    where bolum_isim in('Satis','Mudurluk' ) and  maas>2000
+    order by bolum_isim,personel_isim;
 
-select b.bolum_isim, p.personel_isim,p.maas
-from bolumler b join personel p
-on p.bolum_id=b.bolum_id
-where b.bolum_isim in('satis','mudurluk') and p.maas>2000
-order by b.bolum_isim, p.personel_isim;
 
 
 /* -----------------------------------------------------------------------------
@@ -262,9 +263,24 @@ order by b.bolum_isim, p.personel_isim;
 
  
 ------------------------------------------------------------------------------*/   
-select b.bolum_isim, p.personel_isim, p.maas, (select personel_isim from personel
-                                               where p.mudur_id=personel_id              ) mudur
-from bolumler b right join personel p
+
+select bolum_isim, personel_isim, maas,
+(select personel_isim from personel where p.mudur_id=personel_id ) as mudur_ismi 
+from personel p
+left join bolumler b
 on p.bolum_id=b.bolum_id
-where p.mudur_id in(1222,1333);
+where mudur_id in (1333,1222);
+
+
+
+
+
+
+
+
+
+
+
+
+
 

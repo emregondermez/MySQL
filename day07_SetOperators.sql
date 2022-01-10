@@ -120,19 +120,35 @@ where sirket<>'Honda';
     INSERT INTO personel_bilgi VALUES(344, '5524578574', 2);
     INSERT INTO personel_bilgi VALUES(125, '5537488585', 1);
     
+    drop table personel_bilgi;
 /* -----------------------------------------------------------------------------
   ORNEK6: id'si 123456789 olan personelin Personel tablosundan sehir ve 
   maasini, personel_bilgi tablosundan da (id ilk 3 hanesiyle kaydolmuş=123)
   tel ve cocuk sayisini yazdirin  
 ------------------------------------------------------------------------------*/  
+use sys;
 select sehir, maas from personel
 where id=123456789
 union
 select tel,cocuk_sayisi from personel_bilgi
 where id=123;
     
-    
-    
+/* -----------------------------------------------------------------------------
+  ORNEK7: Personel tablosundan Istanbul veya Ankara'da calisanlarin id'lerini
+ ve 
+ Personel_bilgi tablosundan 2 veya 3 cocugu olanlarin id lerini sorgulayiniz.
 
+------------------------------------------------------------------------------*/    
+    
+select id from personel
+where sehir in('Istanbul','Ankara')
+union
+select id from personel_bilgi
+where cocuk_sayisi in (2,3); 
+
+-- sirketlerden grupla sirketlerin calisan isimlerini say
+
+select sirket,count(isim) from personel
+group by sirket;
 
 
